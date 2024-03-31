@@ -1,5 +1,4 @@
 using ConfigurationPlaceholders;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Extensions.Configuration;
@@ -12,31 +11,38 @@ public static class ConfigurationPlaceholderEx
     /// <summary>
     ///     Adds support for placeholders in configuration sources.
     /// </summary>
-    /// <param name="webApplicationBuilder"><see cref="WebApplicationBuilder" />.</param>
+    /// <param name="applicationBuilder"><see cref="IHostApplicationBuilder" />.</param>
     /// <param name="placeholderResolvers">Placeholder value resolvers.</param>
     /// <param name="missingPlaceholderValueStrategy">How to handle placeholders with missing values.</param>
-    /// <returns><see cref="WebApplicationBuilder" />.</returns>
-    public static WebApplicationBuilder AddConfigurationPlaceholders( this WebApplicationBuilder webApplicationBuilder,
-                                                                      IList<IPlaceholderResolver> placeholderResolvers,
-                                                                      MissingPlaceholderValueStrategy missingPlaceholderValueStrategy = MissingPlaceholderValueStrategy.VerifyAllAtStartup )
+    /// <returns><paramref name="applicationBuilder"/>.</returns>
+    public static IHostApplicationBuilder AddConfigurationPlaceholders(
+        this IHostApplicationBuilder applicationBuilder,
+        IList<IPlaceholderResolver> placeholderResolvers,
+        MissingPlaceholderValueStrategy missingPlaceholderValueStrategy = MissingPlaceholderValueStrategy.VerifyAllAtStartup)
     {
-        webApplicationBuilder.Configuration.AddConfigurationPlaceholders( placeholderResolvers,
-                                                                          missingPlaceholderValueStrategy );
-        return webApplicationBuilder;
+        applicationBuilder.Configuration.AddConfigurationPlaceholders(
+            placeholderResolvers,
+            missingPlaceholderValueStrategy);
+        
+        return applicationBuilder;
     }
 
     /// <summary>
     ///     Adds support for placeholders in configuration sources.
     /// </summary>
-    /// <param name="webApplicationBuilder"><see cref="WebApplicationBuilder" />.</param>
+    /// <param name="applicationBuilder"><see cref="IHostApplicationBuilder" />.</param>
     /// <param name="placeholderResolver">Placeholder value resolver.</param>
     /// <param name="missingPlaceholderValueStrategy">How to handle placeholders with missing values.</param>
-    /// <returns><see cref="WebApplicationBuilder" />.</returns>
-    public static WebApplicationBuilder AddConfigurationPlaceholders( this WebApplicationBuilder webApplicationBuilder,
-                                                                      IPlaceholderResolver placeholderResolver,
-                                                                      MissingPlaceholderValueStrategy missingPlaceholderValueStrategy = MissingPlaceholderValueStrategy.VerifyAllAtStartup ) =>
-        webApplicationBuilder.AddConfigurationPlaceholders( new List<IPlaceholderResolver> { placeholderResolver },
-                                                            missingPlaceholderValueStrategy );
+    /// <returns><paramref name="applicationBuilder"/>.</returns>
+    public static IHostApplicationBuilder AddConfigurationPlaceholders(
+        this IHostApplicationBuilder applicationBuilder,
+        IPlaceholderResolver placeholderResolver,
+        MissingPlaceholderValueStrategy missingPlaceholderValueStrategy = MissingPlaceholderValueStrategy.VerifyAllAtStartup)
+    {
+        return applicationBuilder.AddConfigurationPlaceholders(
+            new List<IPlaceholderResolver> { placeholderResolver },
+            missingPlaceholderValueStrategy );
+    }
 
     /// <summary>
     ///     Adds support for placeholders in configuration sources.
@@ -45,16 +51,15 @@ public static class ConfigurationPlaceholderEx
     /// <param name="placeholderResolvers">Placeholder value resolvers.</param>
     /// <param name="missingPlaceholderValueStrategy">How to handle placeholders with missing values.</param>
     /// <returns><see cref="IHostBuilder" />.</returns>
-    public static IHostBuilder AddConfigurationPlaceholders( this IHostBuilder hostBuilder,
-                                                             IList<IPlaceholderResolver> placeholderResolvers,
-                                                             MissingPlaceholderValueStrategy missingPlaceholderValueStrategy = MissingPlaceholderValueStrategy.VerifyAllAtStartup )
+    public static IHostBuilder AddConfigurationPlaceholders(
+        this IHostBuilder hostBuilder,
+        IList<IPlaceholderResolver> placeholderResolvers,
+        MissingPlaceholderValueStrategy missingPlaceholderValueStrategy = MissingPlaceholderValueStrategy.VerifyAllAtStartup )
     {
-        hostBuilder
-            .ConfigureAppConfiguration( ( _, config ) =>
-            {
-                config.AddConfigurationPlaceholders( placeholderResolvers,
-                                                     missingPlaceholderValueStrategy );
-            } );
+        hostBuilder.ConfigureAppConfiguration( ( _, config ) =>
+        {
+            config.AddConfigurationPlaceholders( placeholderResolvers, missingPlaceholderValueStrategy);
+        });
 
         return hostBuilder;
     }
